@@ -6,6 +6,15 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>{{message}}</h1>
+    <h1>Video List</h1>
+    <ul>
+    {% for video in videos %}
+        <li>
+            <h2>{{ video.title }}</h2>
+            <p>Channel: {{ video.channel }}</p>
+            <img src="{{ video.thumbnail }}" alt="{{ video.title }}">
+        </li>
+    {% endfor %}
+    </ul>
 </body>
 </html>

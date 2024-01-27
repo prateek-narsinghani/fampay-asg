@@ -1,11 +1,13 @@
 import asyncio
 from flask import render_template, request
 from app import app
+from app.models import Video
 from config import Config
 
 @app.route("/")
-def helloWorld():
-    return "Hello World"
+def index():
+    videos = Video.get_all_videos()
+    return render_template('index.html', videos=videos)
 
 @app.route("/home")
 def home():
