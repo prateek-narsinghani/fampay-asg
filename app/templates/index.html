@@ -8,18 +8,47 @@
 </head>
 <body>
     <h1>Video List</h1>
-    <div class="video-container">
-    {% for video in videos %}
-        <div class="video-card">
-            <div class="video-thumbnail">
-                <img src="{{ video.thumbnail }}" alt="{{ video.title }}">
-            </div>
-            <div class="video-details">
-                <h2 class="video-title">{{ video.title }}</h2>
-                <p class="video-channel">Channel: {{ video.channel }}</p>
-            </div>
+    <form action="" method="post" style="display: inline-block; margin-bottom: 20px;">
+        {{ form.hidden_tag() }}
+        <div style="display: inline-block; vertical-align: middle;">
+            <p style="margin: 0; display: inline-flex; align-items: center;">
+                <span style="margin-right: 10px;">{{ form.search_by.label }}</span>
+                {{ form.search_by(cols=32, rows=1) }}&nbsp;
+            </p>
+            <p style="margin: 0; display: inline-flex; align-items: center;">
+                <span style="margin-right: 10px;">{{ form.search_query.label }}</span>
+                {{ form.search_query(cols=32, rows=1) }}&nbsp;
+            </p>
+            <p style="margin: 0; display: inline-flex; align-items: center;">
+                <span style="margin-right: 10px;">{{ form.order_by.label }}</span>
+                {{ form.order_by(cols=32, rows=1) }}&nbsp;
+            </p>
+            <p style="margin: 0; display: inline-flex; align-items: center;">
+                <span style="margin-right: 10px;">{{ form.sort.label }}</span>
+                {{ form.sort(cols=32, rows=1) }}&nbsp;
+                {{ form.submit() }}
+            </p>
         </div>
-    {% endfor %}
+    </form>
+    <div class="video-container">
+        {% for video in videos %}
+            <div class="video-card">
+                <div class="video-thumbnail">
+                    <img src="{{ video.thumbnail }}" alt="{{ video.title }}">
+                </div>
+                <div class="video-details">
+                    <h2 class="video-title">{{ video.title }}</h2>
+                    <p class="video-channel">Channel: {{ video.channel }}</p>
+                    <p class="video-channel">Published at: {{ video.published_at }}</p>
+                </div>
+            </div>
+        {% endfor %}
+        {% if prev_url %}
+            <a href="{{ prev_url }}">Previous Page</a>
+        {% endif %}
+        {% if next_url %}
+            <a href="{{ next_url }}">Next Page</a>
+        {% endif %}
     </div>
 </body>
 </html>

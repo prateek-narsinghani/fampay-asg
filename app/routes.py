@@ -1,13 +1,20 @@
-import asyncio
-from flask import render_template, request
+from flask import render_template, request, url_for
 from app import app
+from app.forms import SearchForm
 from app.models import Video
-from config import Config
 
-@app.route("/")
+@app.route("/", methods=['GET', 'POST'])
 def index():
-    videos = Video.get_all_videos()
-    return render_template('index.html', videos=videos)
+    search_form = SearchForm()
+    page = request.args.get('page', 1, type=int)
+    print("page number", page)
+    if request.method=='POST':
+        print(search_form.search_query.data, search_form.order_by.data)
+    videos = Video.get_all_videos(page)
+    next_url = url_for('index', page=videos.next_num) if videos.has_next else None
+    prev_url = url_for('index', page=videos.prev_num) if videos.has_prev else None
+    return render_template('index.html', videos=videos.items, form=search_form, 
+                                        next_url=next_url, prev_url=prev_url)
 
 @app.route("/home")
 def home():
@@ -19,6 +26,3 @@ def submit():
     return f'Your search results for: {query}'
 
 import app.fetch_data as fetch_data
-
-
-
