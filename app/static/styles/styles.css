@@ -1,0 +1,33 @@
+/* styles.css */
+
+.video-card {
+    display: flex;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.video-thumbnail {
+    flex: 0 0 150px;
+}
+
+.video-thumbnail img {
+    width: 100%;
+    height: auto;
+}
+
+.video-details {
+    flex: 1;
+    padding: 10px;
+}
+
+.video-title {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.video-channel {
+    font-size: 14px;
+    color: #888;
+}

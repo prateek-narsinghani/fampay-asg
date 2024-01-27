@@ -3,18 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Video List</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/styles.css') }}">
 </head>
 <body>
     <h1>Video List</h1>
-    <ul>
+    <div class="video-container">
     {% for video in videos %}
-        <li>
-            <h2>{{ video.title }}</h2>
-            <p>Channel: {{ video.channel }}</p>
-            <img src="{{ video.thumbnail }}" alt="{{ video.title }}">
-        </li>
+        <div class="video-card">
+            <div class="video-thumbnail">
+                <img src="{{ video.thumbnail }}" alt="{{ video.title }}">
+            </div>
+            <div class="video-details">
+                <h2 class="video-title">{{ video.title }}</h2>
+                <p class="video-channel">Channel: {{ video.channel }}</p>
+            </div>
+        </div>
     {% endfor %}
-    </ul>
+    </div>
 </body>
 </html>
