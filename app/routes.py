@@ -16,7 +16,7 @@ def submit():
     query = request.form['query']
     return f'Your search results for: {query}'
 
-import fetch_data
+import app.fetch_data as fetch_data
 
 
 
