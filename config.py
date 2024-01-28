@@ -5,6 +5,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
     _api_key = None
+    _cur_api_key_ind = 0
     _predefined_search_query = None
     VIDEOS_PER_PAGE=os.environ.get('VIDEOS_PER_PAGE') or 5
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'my-secret-key'
@@ -15,9 +16,10 @@ class Config:
 
     @staticmethod
     def get_api_key():
-        if Config._api_key is None:
-            Config._api_key = os.getenv('API_KEY')
-        return Config._api_key
+        if Config._api_key == None:
+            Config._api_key = os.getenv('API_KEY').split(",")
+        print(Config._api_key)
+        return Config._api_key[Config._cur_api_key_ind]
     
     @staticmethod
     def get_predefined_search_query():
@@ -28,3 +30,7 @@ class Config:
     @staticmethod
     def get_post_per_page():
         return int(Config.VIDEOS_PER_PAGE)
+    
+    @staticmethod
+    def update_api_key_ind():
+        Config._cur_api_key_ind = (Config._cur_api_key_ind + 1) % len(Config._api_key)

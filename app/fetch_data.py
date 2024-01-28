@@ -25,10 +25,10 @@ def call_api(api_key, query, page_token=None):
                                               developerKey=api_key)
 
     try:
-        published_after_time = datetime.utcnow() - timedelta(hours=1)
+        published_after_time = datetime.utcnow() - timedelta(days=1)
         published_after_str = published_after_time.strftime('%Y-%m-%dT%H:%M:%SZ')
         request = youtube.search().list(part="snippet",
-                                        maxResults=2,
+                                        maxResults=10,
                                         order="date",
                                         pageToken=page_token,
                                         q=query,
@@ -53,6 +53,13 @@ def call_api(api_key, query, page_token=None):
                           channel=search_result['snippet']['channelTitle']))
 
         return videos, response.get('nextPageToken', None)
+    except googleapiclient.errors.HttpError as e:
+        # Handle quota limit exceeded error
+        # ref: https://developers.google.com/youtube/v3/docs/errors#gdata.CoreErrorDomain
+        if e.resp.status == 403 and "quotaExceeded" == e.error_details:
+            Config.update_api_key_ind()
+            return call_api(api_key, query, page_token)
+        return None, None
     except Exception as e:
         print('Error occurred:', e)
         return None, None
@@ -68,7 +75,12 @@ def fetch_youtube_videos():
 def save_all_videos(videos):
     with app.app_context():
         try:
-            db.session.bulk_save_objects(videos)
+            for video in videos:
+                existing_video = Video.query.filter_by(id=video.id).first()
+                if existing_video:
+                    logging.warning("Video with ID %s already exists. Skipping...", video.id)
+                    continue
+                db.session.add(video)
             db.session.commit()
             logging.info("Saved all videos to the database.")
         except Exception as e:
@@ -76,6 +88,5 @@ def save_all_videos(videos):
             logging.error("Error occurred during database saving: %s", str(e))
     
 sched = BackgroundScheduler(daemon=True)
-sched.add_job(fetch_youtube_videos, 'interval', seconds=5)
+sched.add_job(fetch_youtube_videos, 'interval', seconds=10)
 sched.start()
-scopes = ["https://www.googleapis.com/auth/youtube.force-ssl"]
