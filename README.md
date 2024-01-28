@@ -11,7 +11,7 @@ docker run --env-file dev.env --name fampay -d -p 8000:5000 --rm fampay-youtube:
 ```
 
 
-You can then go to http://localhost:8000/. Please wait for 10 seconds to let the scheduler run for the first time.
+You can then go to http://localhost:8000/. Please wait for 10 seconds to let the scheduler run for the first time and fetch some videos.
 
 A working demo can be found on this link: https://drive.google.com/file/d/1hzWtJXX_83r4f_M95EzFxLd_c0QIqPLb/view?usp=drive_link
 
