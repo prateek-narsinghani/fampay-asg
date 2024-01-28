@@ -15,11 +15,14 @@ class Video(db.Model):
 
     def __repr__(self):
         return '<Title: {} Channel:{}>'.format(self.title, self.channel)
-    
+
     @staticmethod
     def get_all_videos(page, form):
         query = Video._get_query(form)
-        videos = db.paginate(query, page=page, per_page=Config.get_post_per_page(), error_out=False)
+        videos = db.paginate(query,
+                             page=page,
+                             per_page=Config.get_post_per_page(),
+                             error_out=False)
         return videos
 
     @staticmethod
@@ -30,7 +33,7 @@ class Video(db.Model):
         for word in words:
             query = query.filter(Video.title.ilike(f'%{word}%'))
         return query.order_by(Video._get_video_ordering(form))
-        
+
     @staticmethod
     def _get_video_ordering(form):
         if form.sort.data == 'asc':

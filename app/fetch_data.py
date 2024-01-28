@@ -72,6 +72,7 @@ def fetch_youtube_videos():
                                   next_token)
     save_all_videos(videos)
 
+
 def save_all_videos(videos):
     with app.app_context():
         try:
@@ -86,7 +87,8 @@ def save_all_videos(videos):
         except Exception as e:
             db.session.rollback()
             logging.error("Error occurred during database saving: %s", str(e))
-    
+
+
 sched = BackgroundScheduler(daemon=True)
 sched.add_job(fetch_youtube_videos, 'interval', seconds=10)
 sched.start()
