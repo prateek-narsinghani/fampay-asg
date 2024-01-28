@@ -31,4 +31,5 @@ def index():
                            next_url=next_url,
                            prev_url=prev_url)
 
+
 import app.fetch_video_scheduler as fetch_video_scheduler

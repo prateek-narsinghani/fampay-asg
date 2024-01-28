@@ -51,19 +51,21 @@ def call_api(api_key, query, page_token=None):
 def _get_video_objects_from_request(response):
     videos = []
     for search_result in response.get('items', []):
-            # filter out only the videos
-            if search_result['id']['kind'] == 'youtube#video':
-                published_at_str = search_result['snippet']['publishedAt']
-                published_at = datetime.strptime(published_at_str, "%Y-%m-%dT%H:%M:%SZ")
-                videos.append(
-                    Video(title=search_result['snippet']['title'],
-                          description=search_result['snippet']['description'],
-                          id=search_result['id']['videoId'],
-                          thumbnail=search_result['snippet']['thumbnails']
-                          ['default']['url'],
-                          published_at=published_at,
-                          channel=search_result['snippet']['channelTitle']))
+        # filter out only the videos
+        if search_result['id']['kind'] == 'youtube#video':
+            published_at_str = search_result['snippet']['publishedAt']
+            published_at = datetime.strptime(published_at_str,
+                                             "%Y-%m-%dT%H:%M:%SZ")
+            videos.append(
+                Video(title=search_result['snippet']['title'],
+                      description=search_result['snippet']['description'],
+                      id=search_result['id']['videoId'],
+                      thumbnail=search_result['snippet']['thumbnails']
+                      ['default']['url'],
+                      published_at=published_at,
+                      channel=search_result['snippet']['channelTitle']))
     return videos
+
 
 # the function which is called every 10 secs
 def fetch_youtube_videos():
@@ -90,7 +92,8 @@ def save_all_videos(videos):
             db.session.rollback()
             logging.error("Error occurred during database saving: %s", str(e))
 
-# This schedules the fetching of youtube videos after every 
+
+# This schedules the fetching of youtube videos after every
 # 10 secs
 sched = BackgroundScheduler(daemon=True)
 sched.add_job(fetch_youtube_videos, 'interval', seconds=10)

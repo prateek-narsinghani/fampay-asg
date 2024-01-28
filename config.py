@@ -33,7 +33,7 @@ class Config:
         return int(Config.VIDEOS_PER_PAGE)
 
     # when the quota for an API_KEY is exhausted this util function
-    # can be called to update the cur API_KEY index 
+    # can be called to update the cur API_KEY index
     @staticmethod
     def update_api_key_ind():
         Config._cur_api_key_ind = (Config._cur_api_key_ind + 1) % len(
