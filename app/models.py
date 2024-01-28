@@ -1,5 +1,4 @@
-import queue
-from typing import Optional
+from config import Config
 import sqlalchemy as sa
 import sqlalchemy.orm as so
 from datetime import datetime
@@ -18,7 +17,23 @@ class Video(db.Model):
         return '<Title: {} Channel:{}>'.format(self.title, self.channel)
     
     @staticmethod
-    def get_all_videos(page):
-        query = sa.select(Video).order_by(Video.published_at.desc())
-        videos = db.paginate(query, page=page, per_page=app.config['POSTS_PER_PAGE'], error_out=False)
+    def get_all_videos(page, form):
+        query = Video._get_query(form)
+        videos = db.paginate(query, page=page, per_page=Config.get_post_per_page(), error_out=False)
         return videos
+
+    @staticmethod
+    def _get_query(form):
+        query = sa.select(Video)
+        search_query = form.search_query.data
+        words = search_query.split(" ") if search_query != None and search_query != "None" else []
+        for word in words:
+            query = query.filter(Video.title.ilike(f'%{word}%'))
+        return query.order_by(Video._get_video_ordering(form))
+        
+    @staticmethod
+    def _get_video_ordering(form):
+        if form.sort.data == 'asc':
+            return Video.published_at.asc()
+        else:
+            return Video.published_at.desc()

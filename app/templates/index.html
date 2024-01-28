@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video List</title>
+    <title>Fampay Assignment</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/styles.css') }}">
 </head>
 <body>
-    <h1>Video List</h1>
     <form action="" method="post" style="display: inline-block; margin-bottom: 20px;">
         {{ form.hidden_tag() }}
         <div style="display: inline-block; vertical-align: middle;">
@@ -50,5 +49,5 @@
             <a href="{{ next_url }}">Next Page</a>
         {% endif %}
     </div>
-</body>
+    </body>
 </html>
