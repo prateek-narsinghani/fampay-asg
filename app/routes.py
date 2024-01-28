@@ -6,9 +6,6 @@ from app.models import Video
 @app.route("/", methods=['GET', 'POST'])
 def index():
     form = SearchForm()
-    if request.method == 'POST':
-        form = SearchForm(request.args)
-        
     page = request.args.get('page', 1, type=int)
     videos = Video.get_all_videos(page, form)
     next_url = url_for('index', page=videos.next_num) if videos.has_next else None
