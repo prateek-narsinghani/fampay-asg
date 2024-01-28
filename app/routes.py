@@ -5,15 +5,15 @@ from app.models import Video
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
-    search_form = SearchForm()
+    form = SearchForm()
+    if request.method == 'POST':
+        form = SearchForm(request.args)
+        
     page = request.args.get('page', 1, type=int)
-    print("page number", page)
-    if request.method=='POST':
-        print(search_form.search_query.data, search_form.order_by.data)
-    videos = Video.get_all_videos(page)
+    videos = Video.get_all_videos(page, form)
     next_url = url_for('index', page=videos.next_num) if videos.has_next else None
     prev_url = url_for('index', page=videos.prev_num) if videos.has_prev else None
-    return render_template('index.html', videos=videos.items, form=search_form, 
+    return render_template('index.html', videos=videos.items, form=form, 
                                         next_url=next_url, prev_url=prev_url)
 
 @app.route("/home")
