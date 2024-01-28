@@ -17,7 +17,7 @@ class Video(db.Model):
         return '<Title: {} Channel:{}>'.format(self.title, self.channel)
 
     @staticmethod
-    def get_all_videos(page, form):
+    def get_videos(page, form):
         query = Video._get_query(form)
         videos = db.paginate(query,
                              page=page,

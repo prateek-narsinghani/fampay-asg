@@ -12,7 +12,7 @@ def index():
     elif request.args.get('order_by'):
         form = SearchForm(request.args)
     page = request.args.get('page', 1, type=int)
-    videos = Video.get_all_videos(page, form)
+    videos = Video.get_videos(page, form)
     next_url = url_for('index',
                        page=videos.next_num,
                        search_query=form.search_query.data,
@@ -31,16 +31,4 @@ def index():
                            next_url=next_url,
                            prev_url=prev_url)
 
-
-@app.route("/home")
-def home():
-    return render_template('form.html', message='hello')
-
-
-@app.route("/submit", methods=['POST'])
-def submit():
-    query = request.form['query']
-    return f'Your search results for: {query}'
-
-
-import app.fetch_data as fetch_data
+import app.fetch_video_scheduler as fetch_video_scheduler

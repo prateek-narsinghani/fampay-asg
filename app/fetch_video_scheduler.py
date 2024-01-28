@@ -15,8 +15,6 @@ next_token = None
 
 
 def call_api(api_key, query, page_token=None):
-    print("fetching", api_key, query, page_token)
-
     api_service_name = "youtube"
     api_version = "v3"
 
@@ -36,22 +34,7 @@ def call_api(api_key, query, page_token=None):
                                         type="video",
                                         publishedAfter=published_after_str)
         response = request.execute()
-
-        videos = []
-        for search_result in response.get('items', []):
-            # filter out only the videos
-            if search_result['id']['kind'] == 'youtube#video':
-                published_at_str = search_result['snippet']['publishedAt']
-                published_at = datetime.strptime(published_at_str, "%Y-%m-%dT%H:%M:%SZ")
-                videos.append(
-                    Video(title=search_result['snippet']['title'],
-                          description=search_result['snippet']['description'],
-                          id=search_result['id']['videoId'],
-                          thumbnail=search_result['snippet']['thumbnails']
-                          ['default']['url'],
-                          published_at=published_at,
-                          channel=search_result['snippet']['channelTitle']))
-
+        videos = _get_video_objects_from_request(response)
         return videos, response.get('nextPageToken', None)
     except googleapiclient.errors.HttpError as e:
         # Handle quota limit exceeded error
@@ -65,6 +48,24 @@ def call_api(api_key, query, page_token=None):
         return None, None
 
 
+def _get_video_objects_from_request(response):
+    videos = []
+    for search_result in response.get('items', []):
+            # filter out only the videos
+            if search_result['id']['kind'] == 'youtube#video':
+                published_at_str = search_result['snippet']['publishedAt']
+                published_at = datetime.strptime(published_at_str, "%Y-%m-%dT%H:%M:%SZ")
+                videos.append(
+                    Video(title=search_result['snippet']['title'],
+                          description=search_result['snippet']['description'],
+                          id=search_result['id']['videoId'],
+                          thumbnail=search_result['snippet']['thumbnails']
+                          ['default']['url'],
+                          published_at=published_at,
+                          channel=search_result['snippet']['channelTitle']))
+    return videos
+
+# the function which is called every 10 secs
 def fetch_youtube_videos():
     global next_token
     videos, next_token = call_api(Config.get_api_key(),
@@ -73,6 +74,7 @@ def fetch_youtube_videos():
     save_all_videos(videos)
 
 
+# saves all videos to database
 def save_all_videos(videos):
     with app.app_context():
         try:
@@ -88,7 +90,8 @@ def save_all_videos(videos):
             db.session.rollback()
             logging.error("Error occurred during database saving: %s", str(e))
 
-
+# This schedules the fetching of youtube videos after every 
+# 10 secs
 sched = BackgroundScheduler(daemon=True)
 sched.add_job(fetch_youtube_videos, 'interval', seconds=10)
 sched.start()
