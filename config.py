@@ -19,7 +19,6 @@ class Config:
     def get_api_key():
         if Config._api_key == None:
             Config._api_key = os.getenv('API_KEY').split(",")
-        print(Config._api_key)
         return Config._api_key[Config._cur_api_key_ind]
 
     @staticmethod

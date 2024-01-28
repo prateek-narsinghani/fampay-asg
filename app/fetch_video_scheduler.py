@@ -39,13 +39,13 @@ def call_api(api_key, query, page_token=None):
     except googleapiclient.errors.HttpError as e:
         # Handle quota limit exceeded error
         # ref: https://developers.google.com/youtube/v3/docs/errors#gdata.CoreErrorDomain
-        if e.resp.status == 403 and "quotaExceeded" == e.error_details:
+        if e.resp.status == 403 and "quotaExceeded" == e.error_details[0]['reason']:
             Config.update_api_key_ind()
-            return call_api(api_key, query, page_token)
-        return None, None
+            return [], page_token
+        return [], page_token
     except Exception as e:
         print('Error occurred:', e)
-        return None, None
+        return [], page_token
 
 
 def _get_video_objects_from_request(response):

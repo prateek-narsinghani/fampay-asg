@@ -27,11 +27,14 @@ class Video(db.Model):
 
     @staticmethod
     def _get_query(form):
+        search_by = Video.title
+        if form.search_by.data == 'channel':
+            search_by = Video.channel
         query = sa.select(Video)
         search_query = form.search_query.data
         words = search_query.split(" ") if search_query != None and search_query != "None" else []
         for word in words:
-            query = query.filter(Video.title.ilike(f'%{word}%'))
+            query = query.filter(search_by.ilike(f'%{word}%'))
         return query.order_by(Video._get_video_ordering(form))
 
     @staticmethod
