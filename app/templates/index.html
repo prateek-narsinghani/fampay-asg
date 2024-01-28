@@ -30,6 +30,9 @@
         </div>
     </form>
     <div class="video-container">
+        {% if videos | length == 0 %}
+            <h2>Please wait for 10 seconds...</h2>
+        {% endif %}
         {% for video in videos %}
             <div class="video-card">
                 <div class="video-thumbnail">
