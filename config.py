@@ -9,6 +9,7 @@ class Config:
     _cur_api_key_ind = 0
     _predefined_search_query = None
     VIDEOS_PER_PAGE = os.environ.get('VIDEOS_PER_PAGE') or 5
+    VIDEOS_FETCH_PER_REQUEST = os.environ.get('VIDEOS_FETCH_PER_REQUEST') or 5
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'my-secret-key'
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' + os.path.join(basedir, 'app.db')
 

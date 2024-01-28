@@ -26,7 +26,7 @@ def call_api(api_key, query, page_token=None):
         published_after_time = datetime.utcnow() - timedelta(days=1)
         published_after_str = published_after_time.strftime('%Y-%m-%dT%H:%M:%SZ')
         request = youtube.search().list(part="snippet",
-                                        maxResults=10,
+                                        maxResults=Config.VIDEOS_FETCH_PER_REQUEST,
                                         order="date",
                                         pageToken=page_token,
                                         q=query,
